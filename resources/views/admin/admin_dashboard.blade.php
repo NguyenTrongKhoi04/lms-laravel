@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="{{ asset('backend/assets/css/semi-dark.css') }}" />
     <link rel="stylesheet" href="{{ asset('backend/assets/css/header-colors.css') }}" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
-    <title>Rocker - Bootstrap 5 Admin Dashboard Template</title>
+    <title>Admin Dashboard</title>
 </head>
 
 <body>
