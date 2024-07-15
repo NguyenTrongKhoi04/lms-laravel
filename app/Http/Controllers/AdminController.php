@@ -38,6 +38,7 @@ class AdminController extends Controller
 
         return view('admin.admin_profile_view', compact('profileData'));
     }
+
     public function AdminProfileStore(Request $request)
     {
         $id = Auth::user()->id;
