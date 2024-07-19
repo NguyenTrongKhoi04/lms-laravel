@@ -93,14 +93,21 @@ class CategoryController extends Controller
     public function DeleteCategory($id)
     {
         $item = Category::find($id);
-        unlink($item->image);
+        $checkExist_Subcate = SubCategory::where("category_id", $id);
 
-        Category::find($id)->delete();
-
-        $notification = [
-            'message' => 'Category Deleted Successfully',
-            'alert_type' => 'success'
-        ];
+        if (!empty($checkExist_Subcate)) {
+            $notification = [
+                'message' => 'Category Can\'t Be Deleted Because It Has Subcategory',
+                'alert_type' => 'warning'
+            ];
+        } else {
+            unlink($item->image);
+            Category::find($id)->delete();
+            $notification = [
+                'message' => 'Category Deleted Successfully',
+                'alert_type' => 'success'
+            ];
+        }
 
         return redirect()->back()->with($notification);
     }

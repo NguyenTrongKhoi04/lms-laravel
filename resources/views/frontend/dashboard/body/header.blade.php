@@ -54,7 +54,8 @@
                                                                 </h5>
                                                                 <span class="d-block lh-18 py-1">Kamran Ahmed</span>
                                                                 <p class="text-black font-weight-semi-bold lh-18">$12.99
-                                                                    <span class="before-price fs-14">$129.99</span></p>
+                                                                    <span class="before-price fs-14">$129.99</span>
+                                                                </p>
                                                             </div>
                                                         </div>
                                                         <a href="#"
@@ -73,7 +74,8 @@
                                                                 </h5>
                                                                 <span class="d-block lh-18 py-1">Kamran Ahmed</span>
                                                                 <p class="text-black font-weight-semi-bold lh-18">$12.99
-                                                                    <span class="before-price fs-14">$129.99</span></p>
+                                                                    <span class="before-price fs-14">$129.99</span>
+                                                                </p>
                                                             </div>
                                                         </div>
                                                         <a href="#"

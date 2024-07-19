@@ -6,6 +6,7 @@ use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Backend\CategoryController;
+use App\Http\Controllers\Backend\CourseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,9 +31,13 @@ use App\Http\Controllers\Backend\CategoryController;
 // });
 
 
+// TODO Route Public
+//? route '/login' có sẵn do dùng thư viện laravel beeze
 Route::get('/', [UserController::class, 'Index'])->name('index');
-
-
+Route::get('/admin/login', [AdminController::class, 'AdminLogin'])->name('admin.login');
+Route::get('/become/instructor', [AdminController::class, 'BecomeInstructor'])->name('become.instructor');
+Route::post('/instructor/register', [AdminController::class, 'InstructorRegister'])->name('instructor.register');
+Route::get('/instructor/login', [InstructorController::class, 'InstructorLogin'])->name('instructor.login');
 
 // TODO Route User
 Route::get('/dashboard', function () {
@@ -54,13 +59,18 @@ require __DIR__ . '/auth.php';
 // TODO Route Admin
 Route::middleware(['auth', 'roles:admin'])->group(function () {
     // dashboard
-    Route::prefix('admin')->controller(AdminController::class)->group(function () {
-        Route::get('/dashboard', 'AdminDashboard')->name('admin.dashboard');
-        Route::get('/logout', 'AdminLogout')->name('admin.logout');
-        Route::get('/profile', 'AdminProfile')->name('admin.profile');
-        Route::post('/profile/store', 'AdminProfileStore')->name('admin.profile.store');
-        Route::get('/change/password', 'AdminChangePassword')->name('admin.change.password');
-        Route::post('/password/update', 'AdminPasswordUpdate')->name('admin.password.update');
+    Route::controller(AdminController::class)->group(function () {
+        Route::prefix('admin')->group(function () {
+            Route::get('/dashboard', 'AdminDashboard')->name('admin.dashboard');
+            Route::get('/logout', 'AdminLogout')->name('admin.logout');
+            Route::get('/profile', 'AdminProfile')->name('admin.profile');
+            Route::post('/profile/store', 'AdminProfileStore')->name('admin.profile.store');
+            Route::get('/change/password', 'AdminChangePassword')->name('admin.change.password');
+            Route::post('/password/update', 'AdminPasswordUpdate')->name('admin.password.update');
+        });
+
+        Route::get('/all/instructor', 'AllInstructor')->name('all.instructor');
+        Route::post('/update/user/status', 'UpdateUserStatus')->name('update.user.status');
     });
 
     // Category
@@ -82,17 +92,26 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/delete/subcategory/{id}', 'DeleteSubCategory')->name('delete.subcategory');
     });
 });
-Route::get('/admin/login', [AdminController::class, 'AdminLogin'])->name('admin.login');
 
 // TODO Route Instructor
 Route::middleware(['auth', 'roles:instructor'])->group(function () {
-    Route::prefix('instructor')->controller(InstructorController::class)->group(function () {
-        Route::get('/dashboard', 'InstructorDashboard')->name('instructor.dashboard');
-        Route::get('/logout', 'InstructorLogout')->name('instructor.logout');
-        Route::get('/profile', 'InstructorProfile')->name('instructor.profile');
-        Route::post('/profile/store', 'InstructorProfileStore')->name('instructor.profile.store');
-        Route::get('/change/password', 'InstructorChangePassword')->name('instructor.change.password');
-        Route::post('/password/update', 'InstructorPasswordUpdate')->name('instructor.password.update');
+    Route::controller(InstructorController::class)->group(function () {
+        Route::prefix('instructor')->group(function () {
+            Route::get('/dashboard', 'InstructorDashboard')->name('instructor.dashboard');
+            Route::get('/logout', 'InstructorLogout')->name('instructor.logout');
+            Route::get('/profile', 'InstructorProfile')->name('instructor.profile');
+            Route::post('/profile/store', 'InstructorProfileStore')->name('instructor.profile.store');
+            Route::get('/change/password', 'InstructorChangePassword')->name('instructor.change.password');
+            Route::post('/password/update', 'InstructorPasswordUpdate')->name('instructor.password.update');
+        });
+
+        Route::get('/all/course', 'AllCourse')->name('all.course');
+    });
+    // course
+    Route::controller(CourseController::class)->group(function () {
+        Route::get('/all/course', 'AllCourse')->name('all.course');
+        Route::get('/add/course', 'AddCourse')->name('add.course');
+
+        Route::get('/subcategory/ajax/{category_id}', 'GetSubCategory');
     });
 });
-Route::get('/instructor/login', [InstructorController::class, 'InstructorLogin'])->name('instructor.login');

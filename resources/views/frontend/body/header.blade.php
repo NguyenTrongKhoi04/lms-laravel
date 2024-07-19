@@ -76,7 +76,7 @@
                 <div class="row align-items-center">
                     <div class="col-lg-2">
                         <div class="logo-box">
-                            <a href="index.html" class="logo"><img src="{{ asset('frontend/images/logo.png') }}"
+                            <a href="/" class="logo"><img src="{{ asset('frontend/images/logo.png') }}"
                                     alt="logo" /></a>
                             <div class="user-btn-action">
                                 <div class="search-menu-toggle icon-element icon-element-sm shadow-sm mr-2"
