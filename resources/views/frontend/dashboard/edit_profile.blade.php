@@ -1,4 +1,9 @@
 @extends('frontend.dashboard.user_dashboard')
+
+@section('title')
+    khôi
+@endsection
+
 @section('userdashboard')
     <div class="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between mb-5">
         <div class="media media-card align-items-center">

@@ -22,7 +22,7 @@
             <div class="card-body p-4">
                 <h5 class="mb-4">Add Course</h5>
 
-                <form id="myForm" action="{{ route('store.category') }}" method="post" class="row g-3"
+                <form id="myForm" action="{{ route('store.course') }}" method="post" class="row g-3"
                     enctype="multipart/form-data">
                     @csrf
 
@@ -65,6 +65,7 @@
                             @foreach ($categories as $cat)
                                 <option value="{{ $cat->id }}">{{ $cat->category_name }}</option>
                             @endforeach
+
                         </select>
                     </div>
 
@@ -72,7 +73,8 @@
                     <div class="form-group col-md-6">
                         <label for="input1" class="form-label">Course Subcategory </label>
                         <select name="subcategory_id" class="form-select mb-3" aria-label="Default select example">
-                            <option></option>
+                            <option> </option>
+
                         </select>
                     </div>
 
@@ -151,6 +153,7 @@
 
                     <!--   //////////// End Goal Option /////////////// -->
 
+
                     <hr>
                     <div class="row">
 
@@ -191,7 +194,10 @@
                 </form>
             </div>
         </div>
+
+
     </div>
+
 
     <!--========== Start of add multiple class with ajax ==============-->
     <div style="visibility: hidden">
@@ -235,12 +241,13 @@
     </script>
     <!--========== End of add multiple class with ajax ==============-->
 
+
+
     <script type="text/javascript">
         $(document).ready(function() {
             $('select[name="category_id"]').on('change', function() {
                 var category_id = $(this).val();
                 if (category_id) {
-                    console.log(category_id);
                     $.ajax({
                         url: "{{ url('/subcategory/ajax') }}/" + category_id,
                         type: "GET",
@@ -254,6 +261,7 @@
                                     .subcategory_name + '</option>');
                             });
                         },
+
                     });
                 } else {
                     alert('danger');
@@ -261,24 +269,25 @@
             });
         });
     </script>
+
     <script type="text/javascript">
         $(document).ready(function() {
             $('#myForm').validate({
                 rules: {
-                    category_name: {
+                    course_name: {
                         required: true,
                     },
-                    image: {
+                    course_title: {
                         required: true,
                     },
 
                 },
                 messages: {
-                    category_name: {
-                        required: 'Please Enter Category Name',
+                    course_name: {
+                        required: 'Please Enter Course Name',
                     },
-                    image: {
-                        required: 'Please Select Category Image',
+                    course_title: {
+                        required: 'Please Enter Course Titile',
                     },
 
 
