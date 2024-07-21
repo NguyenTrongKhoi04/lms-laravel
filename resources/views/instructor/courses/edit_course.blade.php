@@ -165,9 +165,146 @@
                 </form>
             </div>
         </div>
+    </div>
+    {{-- //// Start Main Course Vidoe Update /// --}}
 
+    <div class="page-content">
+        <div class="card">
+            <div class="card-body">
+
+                <form action="{{ route('update.course.goal') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+
+                    <input type="hidden" name="id" value="{{ $course->id }}">
+                    <!--   //////////// Goal Option /////////////// -->
+                    @foreach ($goals as $item)
+                        <div class="row add_item">
+                            <div class="whole_extra_item_delete" id="whole_extra_item_delete">
+                                <div class="container mt-2">
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="goals" class="form-label"> Goals </label>
+                                                <input type="text" name="course_goals[]" id="goals"
+                                                    class="form-control" value="{{ $item->goal_name }}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6" style="padding-top: 30px;">
+                                            <a class="btn btn-success addeventmore"><i class="fa fa-plus-circle"></i> Add
+                                                More..</a>
+
+                                            <span class="btn btn-danger btn-sm removeeventmore"><i
+                                                    class="fa fa-minus-circle">Remove</i></span>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!---end row-->
+                    @endforeach
+
+                    <!--   //////////// End Goal Option /////////////// -->
+
+
+                    <br><br>
+                    <div class="col-md-12">
+                        <div class="d-md-flex d-grid align-items-center gap-3">
+                            <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+
+                        </div>
+                    </div>
+
+                </form>
+
+
+            </div>
+        </div>
 
     </div>
+
+    {{-- //// Start Main Course Vidoe Update /// --}}
+
+    {{-- //// Start Main Course Image Update /// --}}
+    <div class="page-content">
+        <div class="card">
+            <div class="card-body">
+                <form id="imageForm" action="{{ route('update.course.image') }}" method="post"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="id" value="{{ $course->id }}">
+                    <input type="hidden" name="old_img" value="{{ $course->course_image }}">
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="input2" class="form-label">Course Image </label>
+                            <input class="form-control" name="course_image" type="file" id="image">
+                        </div>
+                        <div class="col-md-6">
+                            <img id="showImage" src="{{ asset($course->course_image) }}" alt="Admin"
+                                class="rounded-circle p-1 bg-primary" width="100">
+                        </div>
+                    </div>
+                    <br><br>
+                    <div class="col-md-12">
+                        <div class="d-md-flex d-grid align-items-center gap-3">
+                            <button type="submit" id="saveImageChange" class="btn btn-primary px-4" disabled>Save
+                                Changes</button>
+                        </div>
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+
+    </div>
+    {{-- //// Start Main Course Image Update /// --}}
+    {{-- //// Start Main Course Vidoe Update /// --}}
+
+    <div class="page-content">
+        <div class="card">
+            <div class="card-body">
+
+                <form id="videoForm" action="{{ route('update.course.video') }}" method="post"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="vid" value="{{ $course->id }}">
+                    <input type="hidden" name="old_vid" value="{{ $course->video }}">
+
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="input2" class="form-label">Course Intro Video </label>
+                            <input type="file" id="videoInput" name="video" class="form-control"
+                                accept="video/mp4, video/webm">
+                        </div>
+
+                        <div class="col-md-6">
+                            <video width="300" height="130" controls>
+                                <source src="{{ asset($course->video) }}" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+
+                    <br><br>
+                    <div class="col-md-12">
+                        <div class="d-md-flex d-grid align-items-center gap-3">
+                            <button type="submit" id="saveVideoChange" class="btn btn-primary px-4" disabled>Save
+                                Changes</button>
+                        </div>
+                    </div>
+
+                </form>
+
+
+            </div>
+        </div>
+
+    </div>
+
+    {{-- //// Start Main Course Vidoe Update /// --}}
 
 
     <!--========== Start of add multiple class with ajax ==============-->
@@ -176,8 +313,6 @@
             <div class="whole_extra_item_delete" id="whole_extra_item_delete">
                 <div class="container mt-2">
                     <div class="row">
-
-
                         <div class="form-group col-md-6">
                             <label for="goals">Goals</label>
                             <input type="text" name="course_goals[]" id="goals" class="form-control"
@@ -194,7 +329,38 @@
         </div>
     </div>
 
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#videoForm').on('submit', function(e) {
+                var videoInput = $('#videoInput').val();
+                if (videoInput === '') {
+                    e.preventDefault();
+                    alert('Please select a video file before submitting the form.');
+                }
+            });
+            $('#videoForm').on('change', function(e) {
+                var videoInput = $('#videoInput').val();
+                if (videoInput !== '') {
+                    $('#saveVideoChange').removeAttr('disabled');
+                }
+            });
 
+            $('#imageForm').on('submit', function(e) {
+                var imageInput = $('#image').val();
+                if (imageInput === '') {
+                    e.preventDefault();
+                    alert('Please select a image file before submitting the form.');
+                }
+            });
+            $('#imageForm').on('change', function(e) {
+                var imageInput = $('#image').val();
+                if (imageInput !== '') {
+                    $('#saveImageChange').removeAttr('disabled');
+                }
+            });
+
+        });
+    </script>
     <!----For Section-------->
     <script type="text/javascript">
         $(document).ready(function() {
@@ -211,8 +377,6 @@
         });
     </script>
     <!--========== End of add multiple class with ajax ==============-->
-
-
 
     <script type="text/javascript">
         $(document).ready(function() {

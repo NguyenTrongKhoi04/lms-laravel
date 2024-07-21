@@ -25,8 +25,16 @@
     <link rel="stylesheet" href="{{ asset('backend/assets/css/dark-theme.css') }}" />
     <link rel="stylesheet" href="{{ asset('backend/assets/css/semi-dark.css') }}" />
     <link rel="stylesheet" href="{{ asset('backend/assets/css/header-colors.css') }}" />
+
+    <!-- Datatable -->
+    <link href="{{ asset('backend/assets/plugins/datatable/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
+    <!-- End Datatable -->
+
+
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
-    <title>Instructor Dashboard</title>
+
+
+    <title>Instructor Dashboard </title>
 </head>
 
 <body>
@@ -54,10 +62,7 @@
     <!--end wrapper-->
 
 
-    <!-- search modal -->
     <!--end switcher-->
-
-
     <!-- Bootstrap JS -->
     <script src="{{ asset('backend/assets/js/bootstrap.bundle.min.js') }}"></script>
     <!--plugins-->
@@ -71,11 +76,19 @@
     <script src="{{ asset('backend/assets/js/index.js') }}"></script>
     <!--app JS-->
     <script src="{{ asset('backend/assets/js/app.js') }}"></script>
+
+    <script src="{{ asset('backend/assets/js/validate.min.js') }}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="{{ asset('backend/assets/js/code.js') }}"></script>
+
+
     <script>
         new PerfectScrollbar(".app-container")
     </script>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
         @if (Session::has('message'))
             var type = "{{ Session::get('alert-type', 'info') }}"
@@ -110,16 +123,15 @@
     </script>
     <!--End Datatable-->
 
-    <script src="https://cdn.tiny.cloud/1/3ile37vwlgbmv5ew5gmrnns86f7hplrc70t128d0ik3y4ove/tinymce/7/tinymce.min.js"
+    <script src="https://cdn.tiny.cloud/1/3ile37vwlgbmv5ew5gmrnns86f7hplrc70t128d0ik3y4ove/tinymce/6/tinymce.min.js"
         referrerpolicy="origin"></script>
     <script>
         tinymce.init({
             selector: 'textarea#myeditorinstance', // Replace this CSS selector to match the placeholder element for TinyMCE
-            plugins: 'code table lists',
-            toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | indent outdent | bullist numlist | code | table'
+            plugins: 'powerpaste advcode table lists checklist',
+            toolbar: 'undo redo | blocks| bold italic | bullist numlist checklist | code | table'
         });
     </script>
-
 
 
 </body>
