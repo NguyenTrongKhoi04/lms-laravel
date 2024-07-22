@@ -31,34 +31,38 @@
                                         <div class="card-body p-4 d-flex justify-content-between">
                                             <h6>{{ $item->section_title }} </h6>
                                             <div class="d-flex justify-content-between align-items-center">
-                                                <button type="submit" class="btn btn-danger px-2 ms-auto"> Delete
-                                                    Section</button> &nbsp;
+                                                <form action="{{ route('delete.section', ['id' => $item->id]) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-danger px-2 ms-auto"> Delete
+                                                        Section</button> &nbsp;
+                                                </form>
+
                                                 <a class="btn btn-primary"
                                                     onclick="addLectureDiv({{ $course->id }}, {{ $item->id }}, 'lectureContainer{{ $key }}' )"
                                                     id="addLectureBtn($key)"> Add Lecture </a>
                                             </div>
                                         </div>
-
-
-
                                         <div class="courseHide" id="lectureContainer{{ $key }}">
                                             <div class="container">
-                                                <div
-                                                    class="lectureDiv mb-3 d-flex align-items-center justify-content-between">
-                                                    <div>
-                                                        <strong>lecture title asdfsdafasfdsf</strong>
+                                                @foreach ($item->lectures as $lecture)
+                                                    <div
+                                                        class="lectureDiv mb-3 d-flex align-items-center justify-content-between">
+                                                        <div>
+                                                            <strong> {{ $loop->iteration }}.
+                                                                {{ $lecture->lecture_title }}</strong>
+                                                        </div>
+                                                        <div class="btn-group">
+                                                            <a href="{{ route('edit.lecture', ['id' => $lecture->id]) }}"
+                                                                class="btn btn-sm btn-primary">Edit</a> &nbsp;
+                                                            <a href="{{ route('delete.lecture', ['id' => $lecture->id, 'khoi' => 1]) }}"
+                                                                class="btn btn-sm btn-danger" id="delete">Delete</a>
+                                                        </div>
                                                     </div>
-
-                                                    <div class="btn-group">
-                                                        <a href="" class="btn btn-sm btn-primary">Edit</a> &nbsp;
-                                                        <a href="" class="btn btn-sm btn-danger">Delete</a>
-
-                                                    </div>
-                                                </div>
+                                                @endforeach
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -78,7 +82,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-
                     <form action="{{ route('add.course.section') }}" method="POST">
                         @csrf
                         <input type="hidden" name="id" value="{{ $course->id }}">
@@ -87,19 +90,17 @@
                             <label for="input1" class="form-label">Course Section</label>
                             <input type="text" name="section_title" class="form-control" id="input1">
                         </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
                 </form>
-
             </div>
         </div>
     </div>
+
     <script>
         function addLectureDiv(courseId, sectionId, containerId) {
-            console.log('khooi');
             const lectureContainer = document.getElementById(containerId);
             const newLectureDiv = document.createElement('div');
             newLectureDiv.classList.add('lectureDiv', 'mb-3');
@@ -110,7 +111,7 @@
                     <textarea class="form-control mt-2" placeholder="Enter Lecture Content"  ></textarea>
                     <h6 class="mt-3">Add Video Url</h6>
                     <input type="text" name="url" class="form-control" placeholder="Add URL">
-                    <button class="btn btn-primary mt-3" onclick="" >Save Lecture</button>
+                    <button class="btn btn-primary mt-3" onclick="saveLecture('${courseId}',${sectionId},'${containerId}')" >Save Lecture</button>
                     <button class="btn btn-secondary mt-3" onclick="hideLectureContainer('${containerId}')">Cancel</button>
                 </div>`;
 
@@ -121,6 +122,61 @@
             const lectureContainer = document.getElementById(containerId);
             lectureContainer.style.display = 'none';
             location.reload();
+        }
+    </script>
+
+    <script>
+        function saveLecture(courseId, sectionId, containerId) {
+            const lectureContainer = document.getElementById(containerId);
+            const lectureTitle = lectureContainer.querySelector('input[type="text"]').value;
+            const lectureContent = lectureContainer.querySelector('textarea').value;
+            const lectureUrl = lectureContainer.querySelector('input[name="url"]').value;
+
+            fetch('/save-lecture', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        course_id: courseId,
+                        section_id: sectionId,
+                        lecture_title: lectureTitle,
+                        lecture_url: lectureUrl,
+                        content: lectureContent
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    lectureContainer.style.display = 'none';
+                    location.reload();
+                    // Start Message 
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 6000
+                    })
+                    if ($.isEmptyObject(data.error)) {
+
+                        Toast.fire({
+                            type: 'success',
+                            title: data.success,
+                        })
+                    } else {
+
+                        Toast.fire({
+                            type: 'error',
+                            title: data.error,
+                        })
+                    }
+                    // End Message  
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         }
     </script>
 @endsection

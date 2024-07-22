@@ -243,9 +243,10 @@ class CourseController extends Controller
     {
         $course = Course::find($id);
         $section = CourseSection::where('course_id', $id)->latest()->get();
+        // dd($section[0]->lectures);
 
         return view('instructor.courses.section.add_course_lecture', compact('course', 'section'));
-    }
+    } // End method
 
     public function AddCourseSection(Request $request)
     {
@@ -259,6 +260,69 @@ class CourseController extends Controller
             'message' => 'Course Section Added Successfully',
             'alert-type' => 'success'
         );
+
+        return redirect()->back()->with($notification);
+    } // End Method
+
+    public function SaveLecture(Request $request)
+    {
+        $lecture = new CourseLecture();
+        $lecture->course_id = $request->course_id;
+        $lecture->section_id = $request->section_id;
+        $lecture->lecture_title = $request->lecture_title;
+        $lecture->url = $request->lecture_url;
+        $lecture->content = $request->content;
+        $lecture->save();
+
+        return response()->json(['success' => 'Lecture Saved Successfully']);
+    } // End Method
+
+    public function EditLecture($id)
+    {
+        $clecture = CourseLecture::find($id);
+        return view('instructor.courses.lecture.edit_course_lecture', compact('clecture'));
+    } // End Method
+
+    public function UpdateCourseLecture(Request $request)
+    {
+        $lid = $request->id;
+
+        CourseLecture::find($lid)->update([
+            'lecture_title' => $request->lecture_title,
+            'url' => $request->url,
+            'content' => $request->content,
+            'updated_at' => Carbon::now()
+        ]);
+
+        $notification = [
+            "message" => 'Course Lecture Updated Successfully',
+            "alert-type" => "success"
+        ];
+
+        return redirect()->back()->with($notification);
+    } // End Method
+
+    public function DeleteLecture($id)
+    {
+        CourseLecture::find($id)->delete();
+
+        $notification = [
+            'message' => 'Course Lecture Delete Successfully',
+            'alert-type' => 'success'
+        ];
+        return redirect()->back()->with($notification);
+    } // End Method
+
+    public function DeleteSection($id)
+    {
+        $section = CourseSection::find($id);
+        $section->lectures()->delete();
+        $section->delete();
+
+        $notification = [
+            'message' => 'Course Section Delete Successfully',
+            'alert-type' => 'success'
+        ];
 
         return redirect()->back()->with($notification);
     }
