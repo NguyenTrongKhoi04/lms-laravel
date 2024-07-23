@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\CourseController;
+use App\Http\Controllers\Frontend\IndexController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,10 @@ Route::get('/become/instructor', [AdminController::class, 'BecomeInstructor'])->
 Route::post('/instructor/register', [AdminController::class, 'InstructorRegister'])->name('instructor.register');
 Route::get('/instructor/login', [InstructorController::class, 'InstructorLogin'])->name('instructor.login');
 
+Route::controller(IndexController::class)->group(function () {
+    Route::get('/course/details/{id}/{slug}', 'CourseDetails');
+});
+
 // TODO Route User
 Route::get('/dashboard', function () {
     return view('frontend.dashboard.index');
@@ -53,7 +58,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/password/update', 'UserPasswordUpdate')->name('user.password.update');
     });
 });
-
 require __DIR__ . '/auth.php';
 
 // TODO Route Admin
