@@ -7,7 +7,10 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\CourseController;
+use App\Http\Controllers\Backend\CouponController;
+use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\IndexController;
+use App\Http\Controllers\Frontend\WishListController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,7 +45,26 @@ Route::get('/instructor/login', [InstructorController::class, 'InstructorLogin']
 
 Route::controller(IndexController::class)->group(function () {
     Route::get('/course/details/{id}/{slug}', 'CourseDetails');
+    Route::get('/category/{id}/{slug}', 'CategoryCourse');
+    Route::get('/subcategory/{id}/{slug}', 'SubCategoryCourse');
+    Route::get('/instructor/details/{id}', 'InstructorDetails')->name('instructor.details');
 });
+
+Route::post('/add-to-wishlist/{course_id}', [WishListController::class, 'AddToWishList']);
+
+Route::controller(CartController::class)->group(function () {
+    Route::post('/cart/data/store/{id}', 'AddToCart');
+    Route::get('/cart/data/', 'CartData');
+    Route::get('/course/mini/cart/', 'AddMiniCart');
+    Route::get('/minicart/course/remove/{rowId}', 'CartRemove');
+    Route::get('/mycart', 'MyCart')->name('mycart');
+    Route::get('/get-cart-course', 'GetCartCourse');
+    Route::post('/coupon-apply', 'CouponApply');
+    Route::get('/coupon-calculation', 'CouponCalculation');
+    Route::get('/coupon-remove', 'CouponRemove');
+});
+
+
 
 // TODO Route User
 Route::get('/dashboard', function () {
@@ -56,6 +78,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/logout', 'UserLogout')->name('user.logout');
         Route::get('/change/password', 'UserChangePassword')->name('user.change.password');
         Route::post('/password/update', 'UserPasswordUpdate')->name('user.password.update');
+    });
+    // Wishlist
+    Route::controller(WishListController::class)->group(function () {
+        Route::get('user/wishlist', 'AllWishlist')->name('user.wishlist');
+        Route::get('/get-wishlist-course/', 'GetWishlistCourse');
+        Route::get('/wishlist-remove/{id}', 'RemoveWishlist');
     });
 });
 require __DIR__ . '/auth.php';
@@ -71,6 +99,10 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
             Route::post('/profile/store', 'AdminProfileStore')->name('admin.profile.store');
             Route::get('/change/password', 'AdminChangePassword')->name('admin.change.password');
             Route::post('/password/update', 'AdminPasswordUpdate')->name('admin.password.update');
+            // course
+            Route::get('/all/course', 'AdminAllCourse')->name('admin.all.course');
+            Route::post('/update/course/stauts', 'UpdateCourseStatus')->name('update.course.stauts');
+            Route::get('/course/details/{id}', 'AdminCourseDetails')->name('admin.course.details');
         });
 
         Route::get('/all/instructor', 'AllInstructor')->name('all.instructor');
@@ -94,6 +126,18 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/edit/subcategory/{id}', 'EditSubCategory')->name('edit.subcategory');
         Route::post('/update/subcategory', 'UpdateSubCategory')->name('update.subcategory');
         Route::get('/delete/subcategory/{id}', 'DeleteSubCategory')->name('delete.subcategory');
+    });
+
+    // Coupon 
+    Route::controller(CouponController::class)->group(function () {
+        Route::prefix('admin')->group(function () {
+            Route::get('/all/coupon', 'AdminAllCoupon')->name('admin.all.coupon');
+            Route::get('/add/coupon', 'AdminAddCoupon')->name('admin.add.coupon');
+            Route::post('/store/coupon', 'AdminStoreCoupon')->name('admin.store.coupon');
+            Route::get('/edit/coupon/{id}', 'AdminEditCoupon')->name('admin.edit.coupon');
+            Route::post('/update/coupon', 'AdminUpdateCoupon')->name('admin.update.coupon');
+            Route::get('/delete/coupon/{id}', 'AdminDeleteCoupon')->name('admin.delete.coupon');
+        });
     });
 });
 

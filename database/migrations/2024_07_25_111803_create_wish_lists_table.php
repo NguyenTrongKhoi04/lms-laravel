@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('wish_lists', function (Blueprint $table) {
             $table->id();
-            $table->string('category_name');
-            $table->string('category_slug');
-            $table->string('image')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('course_id');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('wish_lists');
     }
 };
