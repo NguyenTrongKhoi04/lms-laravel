@@ -64,7 +64,7 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-
+        // TODO Add if table name in DB diffirent "users" 
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

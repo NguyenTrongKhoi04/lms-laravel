@@ -3,7 +3,7 @@
     <i class="la la-times"></i>
 </div><!-- end off-canvas-menu-close -->
 <div class="logo-box px-4">
-    <a href="index.html" class="logo"><img src="{{ asset('frontend/images/logo.png') }}" alt="logo"></a>
+    <a href="{{ route('index') }}" class="logo"><img src="{{ asset('frontend/images/logo.png') }}" alt="logo"></a>
 </div>
 <ul class="generic-list-item off-canvas-menu-list off--canvas-menu-list pt-35px">
     <li class="page-active"><a href="dashboard.html"><svg class="mr-2" xmlns="http://www.w3.org/2000/svg"

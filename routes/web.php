@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\CouponController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\IndexController;
 use App\Http\Controllers\Frontend\WishListController;
+use App\Http\Controllers\Backend\SettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +53,7 @@ Route::controller(IndexController::class)->group(function () {
 
 Route::post('/add-to-wishlist/{course_id}', [WishListController::class, 'AddToWishList']);
 
+// cart
 Route::controller(CartController::class)->group(function () {
     Route::post('/cart/data/store/{id}', 'AddToCart');
     Route::get('/cart/data/', 'CartData');
@@ -62,8 +64,12 @@ Route::controller(CartController::class)->group(function () {
     Route::post('/coupon-apply', 'CouponApply');
     Route::get('/coupon-calculation', 'CouponCalculation');
     Route::get('/coupon-remove', 'CouponRemove');
-});
+    Route::post('/buy/data/store/{id}', 'BuyToCart');
 
+    // checkout
+    Route::get('/checkout', 'CheckoutCreate')->name('checkout');
+    Route::post('/payment', [CartController::class, 'Payment'])->name('payment');
+});
 
 
 // TODO Route User
@@ -138,6 +144,10 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
             Route::post('/update/coupon', 'AdminUpdateCoupon')->name('admin.update.coupon');
             Route::get('/delete/coupon/{id}', 'AdminDeleteCoupon')->name('admin.delete.coupon');
         });
+    });
+    Route::controller(SettingController::class)->group(function () {
+        Route::get('/smtp/setting', 'SmtpSetting')->name('smtp.setting');
+        Route::post('/update/smtp', 'SmtpUpdate')->name('update.smtp'); //! shouldn't update smtp
     });
 });
 
