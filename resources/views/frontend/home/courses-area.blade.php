@@ -72,6 +72,19 @@
 
                                         </div>
                                     </div><!-- end card-image -->
+
+                                    @php
+                                        $reviewcount = App\Models\Review::where('course_id', $course->id)
+                                            ->where('status', 1)
+                                            ->latest()
+                                            ->get();
+                                        $avarage = App\Models\Review::where('course_id', $course->id)
+                                            ->where('status', 1)
+                                            ->avg('rating');
+
+                                    @endphp
+
+
                                     <div class="card-body">
                                         <h6 class="ribbon ribbon-blue-bg fs-14 mb-3">{{ $course->label }}</h6>
                                         <h5 class="card-title"><a
@@ -82,14 +95,46 @@
                                         </p>
                                         <div class="rating-wrap d-flex align-items-center py-2">
                                             <div class="review-stars">
-                                                <span class="rating-number">4.4</span>
-                                                <span class="la la-star"></span>
-                                                <span class="la la-star"></span>
-                                                <span class="la la-star"></span>
-                                                <span class="la la-star"></span>
-                                                <span class="la la-star-o"></span>
+                                                <span class="rating-number">{{ round($avarage, 1) }}</span>
+                                                @if ($avarage == 0)
+                                                    <span class="la la-star-o"></span>
+                                                    <span class="la la-star-o"></span>
+                                                    <span class="la la-star-o"></span>
+                                                    <span class="la la-star-o"></span>
+                                                    <span class="la la-star-o"></span>
+                                                @elseif ($avarage == 1 || $avarage < 2)
+                                                    <span class="la la-star"></span>
+                                                    <span class="la la-star-o"></span>
+                                                    <span class="la la-star-o"></span>
+                                                    <span class="la la-star-o"></span>
+                                                    <span class="la la-star-o"></span>
+                                                @elseif ($avarage == 2 || $avarage < 3)
+                                                    <span class="la la-star"></span>
+                                                    <span class="la la-star"></span>
+                                                    <span class="la la-star-o"></span>
+                                                    <span class="la la-star-o"></span>
+                                                    <span class="la la-star-o"></span>
+                                                @elseif ($avarage == 3 || $avarage < 4)
+                                                    <span class="la la-star"></span>
+                                                    <span class="la la-star"></span>
+                                                    <span class="la la-star"></span>
+                                                    <span class="la la-star-o"></span>
+                                                    <span class="la la-star-o"></span>
+                                                @elseif ($avarage == 4 || $avarage < 5)
+                                                    <span class="la la-star"></span>
+                                                    <span class="la la-star"></span>
+                                                    <span class="la la-star"></span>
+                                                    <span class="la la-star"></span>
+                                                    <span class="la la-star-o"></span>
+                                                @elseif ($avarage == 5 || $avarage < 5)
+                                                    <span class="la la-star"></span>
+                                                    <span class="la la-star"></span>
+                                                    <span class="la la-star"></span>
+                                                    <span class="la la-star"></span>
+                                                    <span class="la la-star"></span>
+                                                @endif
                                             </div>
-                                            <span class="rating-total pl-1">(20,230)</span>
+                                            <span class="rating-total pl-1">({{ count($reviewcount) }})</span>
                                         </div><!-- end rating-wrap -->
                                         <div class="d-flex justify-content-between align-items-center">
 
@@ -134,7 +179,8 @@
 
                             @forelse ($catwiseCourse as $course)
                                 <div class="col-lg-4 responsive-column-half">
-                                    <div class="card card-item card-preview" data-tooltip-content="#tooltip_content_2">
+                                    <div class="card card-item card-preview"
+                                        data-tooltip-content="#tooltip_content_2">
                                         <div class="card-image">
                                             <img class="card-img-top lazy" src="{{ asset($course->course_image) }}"
                                                 data-src="images/img8.jpg" alt="Card image cap">
@@ -237,6 +283,7 @@
                         @endforeach
                     </ul>
                     <div class="d-flex justify-content-between align-items-center">
+
 
                         <button type="submit" class="btn theme-btn flex-grow-1 mr-3"
                             onclick="addToCart({{ $item->id }}, '{{ $item->course_name }}','{{ $item->instructor_id }}','{{ $item->course_name_slug }}' )"><i

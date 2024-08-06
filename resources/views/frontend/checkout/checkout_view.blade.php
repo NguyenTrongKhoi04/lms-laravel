@@ -1,8 +1,8 @@
 @extends('frontend.master')
 @section('home')
     <!-- ================================
-                        START BREADCRUMB AREA
-                    ================================= -->
+                                    START BREADCRUMB AREA
+                                ================================= -->
     <section class="breadcrumb-area section-padding img-bg-2">
         <div class="overlay"></div>
         <div class="container">
@@ -20,12 +20,12 @@
         </div><!-- end container -->
     </section><!-- end breadcrumb-area -->
     <!-- ================================
-                        END BREADCRUMB AREA
-                    ================================= -->
+                                    END BREADCRUMB AREA
+                                ================================= -->
 
     <!-- ================================
-                        START CONTACT AREA
-                    ================================= -->
+                                    START CONTACT AREA
+                                ================================= -->
     <section class="cart-area section--padding">
         <div class="container">
             <div class="row">
@@ -81,12 +81,16 @@
                                             value="handcash">
                                         <label for="bankTransfer">Direct Payment</label>
                                     </div>
+
                                     <div class="payment-tab-toggle">
                                         <input checked="" id="bankTransfer" name="cash_delivery" type="radio"
                                             value="stripe">
                                         <label for="bankTransfer">Stripe Payment</label>
                                     </div>
+
                                 </div><!-- end payment-tab -->
+
+
                             </div>
                         </div><!-- end card-body -->
                     </div><!-- end card -->
@@ -175,6 +179,6 @@
         </form>
     </section>
     <!-- ================================
-                            END CONTACT AREA
-                    ================================= -->
+                                        END CONTACT AREA
+                                ================================= -->
 @endsection

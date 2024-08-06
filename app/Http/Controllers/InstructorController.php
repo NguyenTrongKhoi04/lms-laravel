@@ -19,10 +19,14 @@ class InstructorController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
-        return redirect('/instructor/login');
+        $notification = array(
+            'message' => 'Logout Successfully',
+            'alert-type' => 'info'
+        );
+
+        return redirect('/instructor/login')->with($notification);
     }
 
     public function InstructorLogin()

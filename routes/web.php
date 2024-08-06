@@ -1,19 +1,24 @@
 <?php
 
+use App\Http\Controllers\Backend\BlogController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Backend\ActiveUserController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\CourseController;
 use App\Http\Controllers\Backend\CouponController;
 use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\Backend\QuestionController;
+use App\Http\Controllers\Backend\ReportController;
+use App\Http\Controllers\Backend\ReviewController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\IndexController;
 use App\Http\Controllers\Frontend\WishListController;
 use App\Http\Controllers\Backend\SettingController;
+use App\Http\Middleware\RedirectIfAuthenticated;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,10 +46,10 @@ use App\Http\Controllers\Backend\SettingController;
 // TODO Route Public
 //? route '/login' có sẵn do dùng thư viện laravel beeze
 Route::get('/', [UserController::class, 'Index'])->name('index');
-Route::get('/admin/login', [AdminController::class, 'AdminLogin'])->name('admin.login');
+Route::get('/admin/login', [AdminController::class, 'AdminLogin'])->name('admin.login')->middleware(RedirectIfAuthenticated::class);
 Route::get('/become/instructor', [AdminController::class, 'BecomeInstructor'])->name('become.instructor');
 Route::post('/instructor/register', [AdminController::class, 'InstructorRegister'])->name('instructor.register');
-Route::get('/instructor/login', [InstructorController::class, 'InstructorLogin'])->name('instructor.login');
+Route::get('/instructor/login', [InstructorController::class, 'InstructorLogin'])->name('instructor.login')->middleware(RedirectIfAuthenticated::class);
 
 Route::controller(IndexController::class)->group(function () {
     Route::get('/course/details/{id}/{slug}', 'CourseDetails');
@@ -68,18 +73,20 @@ Route::controller(CartController::class)->group(function () {
     Route::get('/coupon-remove', 'CouponRemove');
     Route::post('/buy/data/store/{id}', 'BuyToCart');
 
+    //apply coupon Instructor
+    Route::post('/inscoupon-apply', 'InsCouponApply');
+
     // checkout
     Route::get('/checkout', 'CheckoutCreate')->name('checkout');
-    Route::post('/payment', [CartController::class, 'Payment'])->name('payment');
 });
-
 
 // TODO Route User
 Route::get('/dashboard', function () {
     return view('frontend.dashboard.index');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'roles:user'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    // Dashboard
     Route::prefix('user')->controller(UserController::class)->group(function () {
         Route::get('/profile', 'UserProfile')->name('user.profile');
         Route::post('/profile/update', 'UserProfileUpdate')->name('user.profile.update');
@@ -87,6 +94,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/change/password', 'UserChangePassword')->name('user.change.password');
         Route::post('/password/update', 'UserPasswordUpdate')->name('user.password.update');
     });
+
     // Wishlist
     Route::controller(WishListController::class)->group(function () {
         Route::get('user/wishlist', 'AllWishlist')->name('user.wishlist');
@@ -94,6 +102,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/wishlist-remove/{id}', 'RemoveWishlist');
     });
 
+    // Order
     Route::controller(OrderController::class)->group(function () {
         Route::get('/my/course', 'MyCourse')->name('my.course');
         Route::get('/course/view/{course_id}', 'CourseView')->name('course.view');
@@ -103,7 +112,19 @@ Route::middleware('auth')->group(function () {
     Route::controller(QuestionController::class)->group(function () {
         Route::post('/user/question', 'UserQuestion')->name('user.question');
     });
+
+    // Payment
+    Route::controller(CartController::class)->group(function () {
+        Route::post('/payment', 'Payment')->name('payment');
+        Route::post('/stripe_order', 'StripeOrder')->name('stripe_order');
+    });
+
+    // Review
+    Route::controller(ReviewController::class)->group(function () {
+        Route::post('/store/review', 'StoreReview')->name('store.review');
+    });
 });
+
 require __DIR__ . '/auth.php';
 
 // TODO Route Admin
@@ -172,6 +193,46 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
 
         Route::get('/admin/confirm/order', 'AdminConfirmOrder')->name('admin.confirm.order');
     });
+
+    // Report
+    Route::controller(ReportController::class)->group(function () {
+        Route::get('/report/view', 'ReportView')->name('report.view');
+        Route::post('/search/by/date', 'SearchByDate')->name('search.by.date');
+        Route::post('/search/by/month', 'SearchByMonth')->name('search.by.month');
+        Route::post('/search/by/year', 'SearchByYear')->name('search.by.year');
+    });
+
+    // Review
+    Route::controller(ReviewController::class)->group(function () {
+        Route::get('/admin/pending/review', 'AdminPendingReview')->name('admin.pending.review');
+        Route::post('/update/review/status', 'UpdateReviewStatus')->name('update.review.status');
+        Route::get('/admin/active/review', 'AdminActiveReview')->name('admin.active.review');
+    });
+
+    // Active Account
+    Route::controller(ActiveUserController::class)->group(function () {
+        Route::get('/all/user', 'AllUser')->name('all.user');
+        Route::get('/all/instructor', 'AllInstructor')->name('all.instructor');
+    });
+
+    // Blog Category
+    Route::controller(BlogController::class)->group(function () {
+        Route::get('/blog/category', 'AllBlogCategory')->name('blog.category');
+        Route::post('/blog/category/store', 'StoreBlogCategory')->name('blog.category.store');
+        Route::get('/edit/blog/category/{id}', 'EditBlogCategory');
+        Route::post('/blog/category/update', 'UpdateBlogCategory')->name('blog.category.update');
+        Route::get('/delete/blog/category/{id}', 'DeleteBlogCategory')->name('delete.blog.category');
+    });
+
+    // Blog Post
+    Route::controller(BlogController::class)->group(function () {
+        Route::get('/blog/post', 'BlogPost')->name('blog.post');
+        Route::get('/add/blog/post', 'AddBlogPost')->name('add.blog.post');
+        Route::post('/store/blog/post', 'StoreBlogPost')->name('store.blog.post');
+        Route::get('/edit/post/{id}', 'EditBlogPost')->name('edit.post');
+        Route::post('/update/blog/post', 'UpdateBlogPost')->name('update.blog.post');
+        Route::get('/delete/post/{id}', 'DeleteBlogPost')->name('delete.post');
+    });
 });
 
 // TODO Route Instructor
@@ -226,5 +287,20 @@ Route::middleware(['auth', 'roles:instructor'])->group(function () {
         Route::get('/instructor/all/question', 'InstructorAllQuestion')->name('instructor.all.question');
         Route::get('/question/details/{id}', 'QuestionDetails')->name('question.details');
         Route::post('/instructor/replay', 'InstructorReplay')->name('instructor.replay');
+    });
+
+    //Coupon
+    Route::controller(CouponController::class)->group(function () {
+        Route::get('/instructor/all/coupon', 'InstructorAllCoupon')->name('instructor.all.coupon');
+        Route::get('/instructor/add/coupon', 'InstructorAddCoupon')->name('instructor.add.coupon');
+        Route::post('/instructor/store/coupon', 'InstructorStoreCoupon')->name('instructor.store.coupon');
+        Route::get('/instructor/edit/coupon/{id}', 'InstructorEditCoupon')->name('instructor.edit.coupon');
+        Route::post('/instructor/update/coupon', 'InstructorUpdateCoupon')->name('instructor.update.coupon');
+        Route::get('/instructor/delete/coupon/{id}', 'InstructorDeleteCoupon')->name('instructor.delete.coupon');
+    });
+
+    // Review
+    Route::controller(ReviewController::class)->group(function () {
+        Route::get('/instructor/all/review', 'InstructorAllReview')->name('instructor.all.review');
     });
 });

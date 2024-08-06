@@ -30,6 +30,11 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $notification = array(
+            'message' => 'Login Successfully',
+            'alert-type' => 'success'
+        );
+
         //! nên tách đoạn $url thành 1 func riêng xử lý cho đỡ rối
         $url = '';
         switch ($request->user()->role) {
@@ -43,10 +48,9 @@ class AuthenticatedSessionController extends Controller
                 $url = '/dashboard';
         }
         // dd($request->user()->role, $url);
-
         // return redirect()->intended(RouteServiceProvider::HOME);
 
-        return redirect()->intended($url);
+        return redirect()->intended($url)->with($notification);
     }
 
     /**
@@ -57,7 +61,6 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');

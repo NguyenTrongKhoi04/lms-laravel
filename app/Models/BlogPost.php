@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Coupon extends Model
+class BlogPost extends Model
 {
     use HasFactory;
     protected $guarded = [];
 
-    public function course()
+    public function blog()
     {
-        return $this->belongsTo(Course::class, 'course_id', 'id');
+        return $this->belongsTo(BlogCategory::class, 'blogcat_id', 'id');
     }
 }
