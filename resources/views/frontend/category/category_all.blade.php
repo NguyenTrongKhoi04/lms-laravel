@@ -1,8 +1,11 @@
 @extends('frontend.master')
+@section('title')
+    {{ $category->category_name }} | Easy Learning
+@endsection
 @section('home')
     <!-- ================================
-                START BREADCRUMB AREA
-            ================================= -->
+                    START BREADCRUMB AREA
+                ================================= -->
     <section class="breadcrumb-area section-padding img-bg-2">
         <div class="overlay"></div>
         <div class="container">
@@ -19,12 +22,12 @@
         </div><!-- end container -->
     </section><!-- end breadcrumb-area -->
     <!-- ================================
-                END BREADCRUMB AREA
-            ================================= -->
+                    END BREADCRUMB AREA
+                ================================= -->
 
     <!--======================================
-                    START COURSE AREA
-            ======================================-->
+                        START COURSE AREA
+                ======================================-->
     <section class="course-area section--padding">
         <div class="container">
             <div class="filter-bar mb-4">
@@ -75,7 +78,8 @@
                                 <div class="divider"><span></span></div>
                                 <ul class="generic-list-item">
                                     @foreach ($categories as $cat)
-                                        <li><a href="{{ url('category/' . $cat->id . '/' . $cat->category_slug) }}">{{ $cat->category_name }}</a>
+                                        <li><a
+                                                href="{{ url('category/' . $cat->id . '/' . $cat->category_slug) }}">{{ $cat->category_name }}</a>
                                         </li>
                                     @endforeach
                                 </ul>
@@ -416,6 +420,6 @@
         </div><!-- end container -->
     </section><!-- end courses-area -->
     <!--======================================
-                    END COURSE AREA
-            ======================================-->
+                        END COURSE AREA
+                ======================================-->
 @endsection

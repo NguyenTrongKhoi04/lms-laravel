@@ -1,3 +1,7 @@
+@php
+    $setting = App\Models\SiteSetting::find(1);
+@endphp
+
 <header class="header-menu-area bg-white">
     <div class="header-top pr-150px pl-150px border-bottom border-bottom-gray py-1">
         <div class="container-fluid">
@@ -6,9 +10,9 @@
                     <div class="header-widget">
                         <ul class="generic-list-item d-flex flex-wrap align-items-center fs-14">
                             <li class="d-flex align-items-center pr-3 mr-3 border-right border-right-gray"><i
-                                    class="la la-phone mr-1"></i><a href="tel:00123456789"> (00) 123 456 789</a></li>
+                                    class="la la-phone mr-1"></i><a href="tel:00123456789"> {{ $setting->phone }}</a></li>
                             <li class="d-flex align-items-center"><i class="la la-envelope-o mr-1"></i><a
-                                    href="mailto:contact@aduca.com"> contact@aduca.com</a></li>
+                                    href="mailto:{{ $setting->email }}">{{ $setting->email }}</a></li>
                         </ul>
                     </div><!-- end header-widget -->
                 </div><!-- end col-lg-6 -->
@@ -69,8 +73,8 @@
                 <div class="row align-items-center">
                     <div class="col-lg-2">
                         <div class="logo-box">
-                            <a href="{{ url('/') }}" class="logo"><img
-                                    src="{{ asset('frontend/images/logo.png') }}" alt="logo"></a>
+                            <a href="{{ url('/') }}" class="logo"><img src="{{ asset($setting->logo) }}"
+                                    alt="logo"></a>
                             <div class="user-btn-action">
                                 <div class="search-menu-toggle icon-element icon-element-sm shadow-sm mr-2"
                                     data-toggle="tooltip" data-placement="top" title="Search">
@@ -108,8 +112,7 @@
                                                     )->get();
                                                 @endphp
                                                 <li>
-                                                    <a
-                                                        href="{{ url('category/' . $cat->id . '/' . $cat->category_slug) }}">{{ $cat->category_name }}<i
+                                                    <a href="{{ url('category/' . $cat->id . '/' . $cat->category_slug) }}">{{ $cat->category_name }}<i
                                                             class="la la-angle-right"></i></a>
                                                     <ul class="sub-menu">
                                                         @foreach ($subcategories as $subcat)
@@ -148,11 +151,13 @@
                                     </li>
 
                                     <li>
-                                        <a href="#">blog </a>
+                                        <a href="{{ route('blog') }}">blog </a>
 
                                     </li>
                                 </ul><!-- end ul -->
                             </nav><!-- end main-menu -->
+
+
                             <div class="shop-cart mr-4">
                                 <ul>
                                     <li>
@@ -160,22 +165,23 @@
                                             <i class="la la-shopping-cart"></i>
                                             <span class="product-count" id="cartQty">0</span>
                                         </p>
+
                                         <ul class="cart-dropdown-menu">
+
                                             <div id="miniCart">
 
                                             </div>
-                                            <br>
+                                            <br><br>
 
                                             <li class="media media-card">
                                                 <div class="media-body fs-16">
                                                     <p class="text-black font-weight-semi-bold lh-18">Total: $<span
-                                                            class="cart-total" id="cartSubTotal"></span></p>
+                                                            class="cart-total" id="cartSubTotal"> </span> </p>
                                                 </div>
                                             </li>
                                             <li>
                                                 <a href="{{ route('mycart') }}" class="btn theme-btn w-100">Go to
-                                                    cart
-                                                    <i class="la la-arrow-right icon ml-1"></i></a>
+                                                    cart <i class="la la-arrow-right icon ml-1"></i></a>
                                             </li>
                                         </ul>
                                     </li>

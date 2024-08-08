@@ -21,7 +21,10 @@ use Carbon\Carbon;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use App\Notifications\OrderComplete;
+use Illuminate\Support\Facades\Notification;
 use Stripe;
+
 
 class CartController extends Controller
 {
@@ -214,6 +217,8 @@ class CartController extends Controller
 
     public function Payment(Request $request)
     {
+        $user = User::where('role', 'instructor')->get();
+
         if (Session::has('coupon')) {
             $total_amount = Session::get('coupon')['total_amount'];
         } else {
@@ -287,6 +292,9 @@ class CartController extends Controller
             ];
 
             Mail::to($request->email)->send(new Orderconfirm($data));
+
+            // Send Notification
+            Notification::send($user, new OrderComplete($request->name));
 
             $notification = [
                 'message' => 'Cash Payment Submit Successfully',
@@ -407,4 +415,15 @@ class CartController extends Controller
         }
     } // End Method 
 
+    public function MarkAsRead(Request $request, $notificationId)
+    {
+
+        $user = Auth::user();
+        $notification = $user->notifications()->where('id', $notificationId)->first();
+
+        if ($notification) {
+            $notification->markAsRead();
+        }
+        return response()->json(['count' => $user->unreadNotifications()->count()]);
+    } // End Method 
 }

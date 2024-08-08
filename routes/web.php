@@ -14,6 +14,7 @@ use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\Backend\QuestionController;
 use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Backend\ReviewController;
+use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\IndexController;
 use App\Http\Controllers\Frontend\WishListController;
@@ -50,7 +51,12 @@ Route::get('/admin/login', [AdminController::class, 'AdminLogin'])->name('admin.
 Route::get('/become/instructor', [AdminController::class, 'BecomeInstructor'])->name('become.instructor');
 Route::post('/instructor/register', [AdminController::class, 'InstructorRegister'])->name('instructor.register');
 Route::get('/instructor/login', [InstructorController::class, 'InstructorLogin'])->name('instructor.login')->middleware(RedirectIfAuthenticated::class);
+Route::get('/blog/cat/list/{id}', [BlogController::class, 'BlogCatList']);
 
+Route::get('/blog', [BlogController::class, 'BlogList'])->name('blog');
+Route::get('/blog/details/{slug}', [BlogController::class, 'BlogDetails']);
+
+Route::post('/mark-notification-as-read/{notification}', [CartController::class, 'MarkAsRead']);
 Route::controller(IndexController::class)->group(function () {
     Route::get('/course/details/{id}/{slug}', 'CourseDetails');
     Route::get('/category/{id}/{slug}', 'CategoryCourse');
@@ -146,11 +152,21 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
 
         Route::get('/all/instructor', 'AllInstructor')->name('all.instructor');
         Route::post('/update/user/status', 'UpdateUserStatus')->name('update.user.status');
+
+        // role-permission
+        Route::get('/all/admin', 'AllAdmin')->name('all.admin');
+        Route::get('/add/admin', 'AddAdmin')->name('add.admin');
+        Route::post('/store/admin', 'StoreAdmin')->name('store.admin');
+        Route::post('/store/admin', 'StoreAdmin')->name('store.admin');
+        Route::get('/edit/admin/{id}', 'EditAdmin')->name('edit.admin');
+        Route::post('/update/admin/{id}', 'UpdateAdmin')->name('update.admin');
+        Route::post('/update/admin/{id}', 'UpdateAdmin')->name('update.admin');
+        Route::get('/delete/admin/{id}', 'DeleteAdmin')->name('delete.admin');
     });
 
     // Category
     Route::controller(CategoryController::class)->group(function () {
-        Route::get('/all/category', 'AllCategory')->name('all.category');
+        Route::get('/all/category', 'AllCategory')->name('all.category')->middleware('permission:category.all');
         Route::get('/add/category', 'AddCategory')->name('add.category');
         Route::post('/store/category', 'StoreCategory')->name('store.category');
         Route::get('/edit/category/{id}', 'EditCategory')->name('edit.category');
@@ -159,7 +175,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/all/subcategory', 'AllSubCategory')->name('all.subcategory');
 
         // SubCategory
-        Route::get('/all/category', 'AllCategory')->name('all.category');
+        Route::get('/all/category', 'AllCategory')->name('all.category')->middleware('permission:category.all');;
         Route::get('/add/subcategory', 'AddSubCategory')->name('add.subcategory');
         Route::post('/store/subcategory', 'StoreSubCategory')->name('store.subcategory');
         Route::get('/edit/subcategory/{id}', 'EditSubCategory')->name('edit.subcategory');
@@ -232,6 +248,44 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/edit/post/{id}', 'EditBlogPost')->name('edit.post');
         Route::post('/update/blog/post', 'UpdateBlogPost')->name('update.blog.post');
         Route::get('/delete/post/{id}', 'DeleteBlogPost')->name('delete.post');
+    });
+
+    // Site Setting
+    Route::controller(SettingController::class)->group(function () {
+        Route::get('/site/setting', 'SiteSetting')->name('site.setting');
+        Route::post('/update/site', 'UpdateSite')->name('update.site');
+    });
+
+    // Permission
+    Route::controller(RoleController::class)->group(function () {
+        Route::get('/all/permission', 'AllPermission')->name('all.permission');
+        Route::get('/add/permission', 'AddPermission')->name('add.permission');
+        Route::post('/store/permission', 'StorePermission')->name('store.permission');
+        Route::get('/edit/permission/{id}', 'EditPermission')->name('edit.permission');
+        Route::post('/update/permission', 'UpdatePermission')->name('update.permission');
+        Route::get('/delete/permission/{id}', 'DeletePermission')->name('delete.permission');
+
+        // Exel
+        Route::get('/import/permission', 'ImportPermission')->name('import.permission');
+        Route::get('/export', 'Export')->name('export');
+        Route::post('/import', 'Import')->name('import');
+    });
+
+    // Role 
+    Route::controller(RoleController::class)->group(function () {
+        Route::get('/all/roles', 'AllRoles')->name('all.roles');
+        Route::get('/add/roles', 'AddRoles')->name('add.roles');
+        Route::post('/store/roles', 'StoreRoles')->name('store.roles');
+        Route::get('/edit/roles/{id}', 'EditRoles')->name('edit.roles');
+        Route::post('/update/roles', 'UpdateRoles')->name('update.roles');
+        Route::get('/delete/roles/{id}', 'DeleteRoles')->name('delete.roles');
+
+        Route::get('/add/roles/permission', 'AddRolesPermission')->name('add.roles.permission');
+        Route::post('/role/permission/store', 'RolePermissionStore')->name('role.permission.store');
+        Route::get('/all/roles/permission', 'AllRolesPermission')->name('all.roles.permission');
+        Route::get('/admin/edit/roles/{id}', 'AdminEditRoles')->name('admin.edit.roles');
+        Route::post('/admin/roles/update/{id}', 'AdminUpdateRoles')->name('admin.roles.update');
+        Route::get('/admin/delete/roles/{id}', 'AdminDeleteRoles')->name('admin.delete.roles');
     });
 });
 
