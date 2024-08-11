@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="{{ asset('backend/assets/css/semi-dark.css') }}" />
     <link rel="stylesheet" href="{{ asset('backend/assets/css/header-colors.css') }}" />
     <!-- CSRF TOKEN -->
+    @vite(['resources/js/app.js'])
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Datatable -->

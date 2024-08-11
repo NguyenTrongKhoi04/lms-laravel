@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Backend\ActiveUserController;
 use App\Http\Controllers\Backend\CategoryController;
+use App\Http\Controllers\Backend\ChatController;
 use App\Http\Controllers\Backend\CourseController;
 use App\Http\Controllers\Backend\CouponController;
 use App\Http\Controllers\Backend\OrderController;
@@ -57,6 +58,7 @@ Route::get('/blog', [BlogController::class, 'BlogList'])->name('blog');
 Route::get('/blog/details/{slug}', [BlogController::class, 'BlogDetails']);
 
 Route::post('/mark-notification-as-read/{notification}', [CartController::class, 'MarkAsRead']);
+
 Route::controller(IndexController::class)->group(function () {
     Route::get('/course/details/{id}/{slug}', 'CourseDetails');
     Route::get('/category/{id}/{slug}', 'CategoryCourse');
@@ -85,6 +87,12 @@ Route::controller(CartController::class)->group(function () {
     // checkout
     Route::get('/checkout', 'CheckoutCreate')->name('checkout');
 });
+
+Route::get('/user-all', [ChatController::class, 'GetAllUsers']);
+Route::get('/user-message/{id}', [ChatController::class, 'UserMsgById']);
+Route::post('/send-message', [ChatController::class, 'SendMessage']);
+Route::get('/user-message/{id}', [ChatController::class, 'UserMsgById']);
+
 
 // TODO Route User
 Route::get('/dashboard', function () {
@@ -129,6 +137,9 @@ Route::middleware('auth')->group(function () {
     Route::controller(ReviewController::class)->group(function () {
         Route::post('/store/review', 'StoreReview')->name('store.review');
     });
+
+    // Chat 
+    Route::get('/live/chat', [UserController::class, 'LiveChat'])->name('live.chat');
 });
 
 require __DIR__ . '/auth.php';
@@ -357,4 +368,7 @@ Route::middleware(['auth', 'roles:instructor'])->group(function () {
     Route::controller(ReviewController::class)->group(function () {
         Route::get('/instructor/all/review', 'InstructorAllReview')->name('instructor.all.review');
     });
+
+    // Chat
+    Route::get('/instructor/live/chat', [ChatController::class, 'LiveChat'])->name('instructor.live.chat');
 });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ChatMessage;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -99,5 +100,21 @@ class UserController extends Controller
         ];
 
         return back()->with($notification);
-    }
+    } // End Method
+
+    public function LiveChat()
+    {
+        return view('frontend.dashboard.live_chat');
+    } // End Method 
+
+    public function GetAllUsers()
+    {
+        $chats = ChatMessage::orderBy('id', 'DESC')
+            ->where('sender_id', auth()->id())
+            ->orWhere('receiver_id', auth()->id())
+            ->get();
+
+        return $chats;
+    } // End Method 
+
 }
